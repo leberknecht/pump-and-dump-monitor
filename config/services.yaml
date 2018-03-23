@@ -2,6 +2,12 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: 'en'
+    secret: 'ThisTokenShouldBeMoreUnique'
+    pusher_id: 'de504dc5763aeef9ff52'
+    rabbitmq_user: guest
+    rabbitmq_password: guest
+    rabbitmq_host: pnd_rabbitmq
+    websocket_host: 'ws://pnd_websocket_server:8081'
 
 services:
     # default configuration for services in *this* file
@@ -23,6 +29,28 @@ services:
     App\Controller\:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
+
+    websocket_client:
+        class: WebSocket\Client
+        arguments:
+            - '%websocket_host%'
+
+    App\Service\TradesListenerService:
+        autowire: false
+        autoconfigure: false
+        public: true
+        parent: 'App\Service\BaseService'
+        arguments:
+          - '@App\Service\WebsocketClientService'
+          - '%secret%'
+
+    App\Service\WebsocketClientService:
+        autowire: false
+        autoconfigure: false
+        public: true
+        parent: 'App\Service\BaseService'
+        arguments:
+          - '@websocket_client'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

@@ -77,8 +77,23 @@
     "monolog/monolog": {
         "version": "1.23.0"
     },
+    "nikic/php-parser": {
+        "version": "v4.0.0"
+    },
     "ocramius/proxy-manager": {
         "version": "2.1.1"
+    },
+    "php-amqplib/php-amqplib": {
+        "version": "v2.7.2"
+    },
+    "php-amqplib/rabbitmq-bundle": {
+        "version": "1.12",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "1.12",
+            "ref": "ce3ca2e4577270c4f518539aa6b9e878998fcfef"
+        }
     },
     "phpdocumentor/reflection-common": {
         "version": "1.0.1"
@@ -371,8 +386,8 @@
     "symfony/yaml": {
         "version": "v4.0.6"
     },
-    "twbs/bootstrap": {
-        "version": "v4.0.0"
+    "textalk/websocket": {
+        "version": "1.2.0"
     },
     "twig/twig": {
         "version": "v2.4.6"

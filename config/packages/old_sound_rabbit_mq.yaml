@@ -1,0 +1,28 @@
+old_sound_rabbit_mq:
+    connections:
+        default:
+            host:     '%rabbitmq_host%'
+            port:     5672
+            user:     '%rabbitmq_user%'
+            password: '%rabbitmq_password%'
+            vhost:    '/'
+            lazy:     false
+            connection_timeout: 1
+            read_write_timeout: 1
+    consumers:
+        trades_listener:
+            connection:       default
+            exchange_options: {name: 'trades', type: direct }
+            queue_options:    {name: 'trades', durable: false}
+            callback:         App\Service\TradesListenerService
+#    producers:
+#        # use 'old_sound_rabbit_mq.task_producer' service to send data.
+#        task:
+#            connection:       default
+#            exchange_options: { name: 'task', type: direct }
+#    consumers:
+#        task:
+#            connection:       default
+#            exchange_options: { name: 'task', type: direct }
+#            queue_options:    { name: 'task'}
+#            callback:         App\Consumer\TaskConsumer

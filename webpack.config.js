@@ -9,6 +9,8 @@ Encore
     .enableSourceMaps(!Encore.isProduction())
     //.enableVersioning(Encore.isProduction())
     .addEntry('js/app', './assets/js/app.js')
+    .addEntry('js/feedReader', './assets/js/feedReader.jsx')
+    .enableReactPreset()
     .addStyleEntry('css/bootstrap', './assets/css/bootstrap.css')
 
     // uncomment if you use Sass/SCSS files

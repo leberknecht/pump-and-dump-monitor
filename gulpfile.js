@@ -5,7 +5,7 @@ let browserSync = require('browser-sync');
 gulp.task('browser-sync', function() {
     browserSync({
         // Using a localhost address with a port
-        proxy: "localhost:8000",
+        proxy: "pndmoni.local",
 
         files: [
             "public/build/js/*.js",

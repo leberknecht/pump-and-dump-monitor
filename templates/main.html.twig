@@ -1,18 +1,14 @@
 {% extends 'base.html.twig' %}
 
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('build/js/feedReader.js') }}"></script>
+{% endblock %}
 
 {% block body %}
     <div class="container">
         <div class="row">
-            <div class="col-sm">
-                One of three columns
-            </div>
-            <div class="col-sm">
-                One of three columns
-            </div>
-            <div class="col-sm">
-                One of three columns
-            </div>
+            <div id="root" data-websocket-host="{{ websocket_host }}"></div>
         </div>
     </div>
 {% endblock %}
