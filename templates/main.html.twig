@@ -8,7 +8,14 @@
 {% block body %}
     <div class="container">
         <div class="row">
-            <div id="root" data-websocket-host="{{ websocket_host }}"></div>
+            <div class="col-sm">
+                <h1>latest trades</h1>
+                <div id="root" data-websocket-host="{{ websocket_host }}"></div>
+            </div>
+            <div class="col-sm">
+                <h1>symbol data</h1>
+            </div>
+
         </div>
     </div>
 {% endblock %}

@@ -9,6 +9,7 @@ gulp.task('browser-sync', function() {
 
         files: [
             "public/build/js/*.js",
+            "public/build/js/*.jsx",
             "public/build/css/*.css",
             "templates/*.twig"
         ]

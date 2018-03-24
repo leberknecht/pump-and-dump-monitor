@@ -9,6 +9,14 @@ services:
       - ./node_modules:/node_modules
     command: node /code/scraper/BitstampScraper.js
 
+  pnd_scraper_bitnance:
+    build: docker/nodejs
+    user: www-data
+    volumes:
+      - ./:/code
+      - ./node_modules:/node_modules
+    command: node /code/scraper/BinanceScraper.js
+
   pnd_rabbitmq:
     image: rabbitmq:management
     expose:
