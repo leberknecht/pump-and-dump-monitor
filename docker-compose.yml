@@ -9,13 +9,21 @@ services:
       - ./node_modules:/node_modules
     command: node /code/scraper/BitstampScraper.js
 
-  pnd_scraper_bitnance:
+  pnd_scraper_binance:
     build: docker/nodejs
     user: www-data
     volumes:
       - ./:/code
       - ./node_modules:/node_modules
     command: node /code/scraper/BinanceScraper.js
+
+  pnd_scraper_poloniex:
+    build: docker/nodejs
+    user: www-data
+    volumes:
+      - ./:/code
+      - ./node_modules:/node_modules
+    command: node /code/scraper/PoloniexScraper.js
 
   pnd_rabbitmq:
     image: rabbitmq:management

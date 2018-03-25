@@ -46,13 +46,6 @@ class FeedReader extends React.Component {
             }
         } else {
             let symbolTrades = symbolStats[trade.symbol][trade.exchange].trades;
-            let lastTrade = symbolTrades[symbolTrades.length - 1];
-            if (lastTrade.price > trade.price ) {
-                //console.log('price -- falling for ' + trade.symbol + 'last: ' + lastTrade.price + 'now:' + trade.price)
-            } else {
-                //console.log('price ++ raising for ' + trade.symbol + 'last: ' + lastTrade.price + 'now:' + trade.price)
-            }
-
             symbolTrades.push(trade);
             symbolStats[trade.symbol][trade.exchange].trades = symbolTrades;
         }

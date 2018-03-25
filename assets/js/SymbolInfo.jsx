@@ -28,14 +28,30 @@ class SymbolInfo extends React.Component {
         );
     }
 
+    getSortedKeysByTradesCount(stats) {
+        let keys = Object.keys(stats);
+        return keys.sort((a,b) => {
+            console.log('sorting a ' + a + ' b ' + b);
+
+            let atrades = 0;
+            let btrades = 0;
+            Object.keys(stats[a]).map((e) => {atrades += stats[a][e].trades.length});
+            Object.keys(stats[b]).map((e) => {btrades += stats[b][e].trades.length});
+
+            return btrades - atrades
+        });
+    }
+
     render() {
+        let keys = this.getSortedKeysByTradesCount(this.state.symbolStats);
+        
         return (
             <div className="well">
                 <h1>Symbol</h1>
                 <table>
                 <tbody>
                   {
-                      Object.keys(this.state.symbolStats).map(this.renderSymbol)
+                      keys.map(this.renderSymbol)
                   }
                 </tbody>
                 </table>
