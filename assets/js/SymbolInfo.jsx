@@ -10,6 +10,10 @@ class SymbolInfo extends React.Component {
         };
     }
 
+    shouldComponentUpdate(nextProps) {
+        return Math.random() > 0.95;
+    }
+
     renderSymbol(symbolName) {
         let stats = this.state.symbolStats[symbolName];
         let exchanges = Object.keys(stats);
@@ -20,7 +24,7 @@ class SymbolInfo extends React.Component {
                 <td key={ "exchanges-" + symbolName}>
                     {
                         exchanges.map((exchangeName) =>
-                            <li key={symbolName + exchangeName}>{ exchangeName} { stats[exchangeName].trades.length }</li>
+                            <li key={symbolName + exchangeName}>{ exchangeName} { stats[exchangeName].tradeCount }</li>
                         )
                     }
                 </td>
@@ -35,8 +39,8 @@ class SymbolInfo extends React.Component {
 
             let atrades = 0;
             let btrades = 0;
-            Object.keys(stats[a]).map((e) => {atrades += stats[a][e].trades.length});
-            Object.keys(stats[b]).map((e) => {btrades += stats[b][e].trades.length});
+            Object.keys(stats[a]).map((e) => {atrades += stats[a][e].tradeCount});
+            Object.keys(stats[b]).map((e) => {btrades += stats[b][e].tradeCount});
 
             return btrades - atrades
         });
@@ -44,10 +48,10 @@ class SymbolInfo extends React.Component {
 
     render() {
         let keys = this.getSortedKeysByTradesCount(this.state.symbolStats);
-        
+        //let keys = Object.keys(this.state.symbolStats);
+
         return (
             <div className="well">
-                <h1>Symbol</h1>
                 <table>
                 <tbody>
                   {

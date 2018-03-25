@@ -40,14 +40,17 @@ class FeedReader extends React.Component {
         if ( !(trade.exchange in symbolStats[trade.symbol]) ) {
             symbolStats[trade.symbol][trade.exchange] =  {
                 trades: [ trade ],
+                tradeCount: 0,
                 lastPrice: trade.price,
                 change: 0,
                 lastChanges: []
             }
         } else {
-            let symbolTrades = symbolStats[trade.symbol][trade.exchange].trades;
-            symbolTrades.push(trade);
-            symbolStats[trade.symbol][trade.exchange].trades = symbolTrades;
+            if (symbolStats[trade.symbol][trade.exchange].trades.length < 20) {
+                symbolStats[trade.symbol][trade.exchange].trades.push(trade);
+            }
+
+            symbolStats[trade.symbol][trade.exchange].tradeCount++;
         }
 
         this.state.symbolStats = symbolStats;
@@ -57,6 +60,7 @@ class FeedReader extends React.Component {
         return (
             <div className="row">
                 <div className="col-md-5">
+                    <h2>last trades</h2>
                     <table className="table">
                         <tbody>
                         {
@@ -72,6 +76,7 @@ class FeedReader extends React.Component {
                     </table>
                 </div>
                 <div className="col-md-7">
+                    <h2>Symbol</h2>
                     <SymbolInfo symbolStats={ this.state.symbolStats }/>
                 </div>
             </div>
