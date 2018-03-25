@@ -23,10 +23,10 @@ class BitstampScraper {
         let tradesChannelEur = this.pusher.subscribe('live_trades_btceur');
         let that = this;
         tradesChannel.bind('trade', function (data) {
-            that.tradePusher.send('bitstamp', 'BTC_USD', data.amount, data.price);
+            that.tradePusher.send('bitstamp', 'BTC-USD', data.amount, data.price);
         });
         tradesChannelEur.bind('trade', function (data) {
-            that.tradePusher.send('bitstamp', 'BTC_EUR', data.amount, data.price);
+            that.tradePusher.send('bitstamp', 'BTC-EUR', data.amount, data.price);
         });
     }
 }

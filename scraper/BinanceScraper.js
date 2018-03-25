@@ -14,7 +14,7 @@ class BinanceScraper {
     onMessage(msg) {
         let marketData = JSON.parse(msg.data);
         let parts = marketData.data.s.match(/(.{2,})(ETC|BTC|USDT|ETH|BNB)/);
-        tradePusher.send("binance", parts[2] + '_' + parts[1], marketData.data.q, marketData.data.p)
+        tradePusher.send("binance", parts[2] + '-' + parts[1], marketData.data.q, marketData.data.p)
     };
 
     onClose() {

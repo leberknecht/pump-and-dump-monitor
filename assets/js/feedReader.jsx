@@ -63,7 +63,7 @@ class FeedReader extends React.Component {
     render() {
         return (
             <div className="row">
-                <div className="col-md">
+                <div className="col-md-5">
                     <table className="table">
                         <tbody>
                         {
@@ -78,7 +78,7 @@ class FeedReader extends React.Component {
                         </tbody>
                     </table>
                 </div>
-                <div className="col-md">
+                <div className="col-md-7">
                     <SymbolInfo symbolStats={ this.state.symbolStats }/>
                 </div>
             </div>

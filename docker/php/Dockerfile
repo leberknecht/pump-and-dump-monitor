@@ -28,20 +28,18 @@ RUN pecl install imagick
 RUN docker-php-ext-enable imagick
 RUN apt-get install -y libpng-dev
 RUN docker-php-ext-install gd
+RUN apt-get install -y cron
 
-COPY composer.phar /usr/bin/composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
 COPY wait-for-it.sh /usr/bin/wait-for-it
-
 RUN chmod a+x /usr/bin/wait-for-it
-RUN chmod a+x /usr/bin/composer
 
 RUN chown www-data:www-data /var/www
 
 RUN usermod -s /bin/bash www-data
-RUN su www-data -c 'composer global require "hirak/prestissimo:^0.3"'
 
-RUN apt-get install -y cron
-
+RUN /bin/su www-data -c 'composer global require "hirak/prestissimo:^0.3"'
 RUN echo "memory_limit=-1" > /usr/local/etc/php/conf.d/no_memory_limit.ini
 
 WORKDIR /code

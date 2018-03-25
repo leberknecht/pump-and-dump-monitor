@@ -3,9 +3,29 @@ import React from "react";
 class SymbolInfo extends React.Component {
     constructor(props) {
         super(props);
+
+        this.renderSymbol = this.renderSymbol.bind(this);
         this.state = {
             symbolStats: props.symbolStats,
         };
+    }
+
+    renderSymbol(symbolName) {
+        let stats = this.state.symbolStats[symbolName];
+        let exchanges = Object.keys(stats);
+
+        return (
+            <tr key={ symbolName }>
+                <td key={ "symbol-name" + symbolName}>{ symbolName }</td>
+                <td key={ "exchanges-" + symbolName}>
+                    {
+                        exchanges.map((exchangeName) =>
+                            <li key={symbolName + exchangeName}>{ exchangeName} { stats[exchangeName].trades.length }</li>
+                        )
+                    }
+                </td>
+            </tr>
+        );
     }
 
     render() {
@@ -15,9 +35,7 @@ class SymbolInfo extends React.Component {
                 <table>
                 <tbody>
                   {
-                      this.state.symbolStats.map( (msg, index) =>
-                          <tr key={ index }><td key={ "symbol-name" + index}>{ index }</td></tr>
-                      )
+                      Object.keys(this.state.symbolStats).map(this.renderSymbol)
                   }
                 </tbody>
                 </table>
