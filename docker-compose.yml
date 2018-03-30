@@ -4,26 +4,29 @@ services:
   pnd_scraper_bitstamp:
     build: docker/nodejs
     user: www-data
+    links:
+      - pnd_rabbitmq
     volumes:
       - ./:/code
-      - ./node_modules:/node_modules
-    command: node /code/scraper/BitstampScraper.js
+    command: node scraper/BitstampScraper.js
 
   pnd_scraper_binance:
     build: docker/nodejs
     user: www-data
+    links:
+      - pnd_rabbitmq
     volumes:
       - ./:/code
-      - ./node_modules:/node_modules
-    command: node /code/scraper/BinanceScraper.js
+    command: node scraper/BinanceScraper.js
 
   pnd_scraper_poloniex:
     build: docker/nodejs
     user: www-data
+    links:
+      - pnd_rabbitmq
     volumes:
       - ./:/code
-      - ./node_modules:/node_modules
-    command: node /code/scraper/PoloniexScraper.js
+    command: node scraper/PoloniexScraper.js
 
   pnd_rabbitmq:
     image: rabbitmq:management
@@ -39,10 +42,9 @@ services:
       - NGINX_HOST=pndmoni.local
     links:
       - pnd_phpfpm
-      - pnd_websocket_server
     ports:
       - '80:80'
-    command: wait-for-it nc_phpfpm:9000 -- wait-for-it nc_websocket_server:8081 -- nginx
+    command: wait-for-it pnd_phpfpm:9000 -- wait-for-it pnd_websocket_server:8081 -- nginx
 
   pnd_websocket_server:
     build: docker/nodejs
@@ -52,7 +54,7 @@ services:
     volumes:
       - ./:/code
     restart: unless-stopped
-    command: node /code/scraper/WebsocketServer.js
+    command: node scraper/WebsocketServer.js
 
   pnd_phpfpm:
     build: docker/php
@@ -62,7 +64,7 @@ services:
     volumes:
       - ./:/code
       - ./docker/php/phpfpm.conf:/usr/local/etc/php-fpm.d/www.conf
-    command: wait-for-it nc_db:3306 -- wait-for-it nc_rabbitmq:5672 -- php-fpm
+    command: wait-for-it pnd_rabbitmq:5672 -- php-fpm
 
   pnd_trades_listener:
     build: docker/php

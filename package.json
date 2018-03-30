@@ -17,12 +17,14 @@
     },
     "dependencies": {
         "amqplib": "^0.5.2",
+        "css-loader": "^0.28.11",
         "fs": "^0.0.1-security",
         "js-yaml": "^3.11.0",
         "popper.js": "^1.14.1",
         "prop-types": "^15.6.1",
         "pusher-js": "^4.2.2",
         "react": "^16.2.0",
+        "react-bootstrap": "^0.32.1",
         "react-dom": "^16.2.0"
     }
 }

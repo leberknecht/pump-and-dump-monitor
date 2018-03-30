@@ -1,4 +1,18 @@
 import React from "react";
+import { Glyphicon } from "react-bootstrap";
+
+function TrendIcon(props) {
+    // let change = props.change;
+    // if (change > 0) {
+    //     return (
+    //         <Glyphicon glyph="arrow-up" />
+    //     );
+    // }
+
+    return (
+        <h1>dud</h1>
+    );
+}
 
 class SymbolInfo extends React.Component {
     constructor(props) {
@@ -22,11 +36,27 @@ class SymbolInfo extends React.Component {
             <tr key={ symbolName }>
                 <td key={ "symbol-name" + symbolName}>{ symbolName }</td>
                 <td key={ "exchanges-" + symbolName}>
-                    {
-                        exchanges.map((exchangeName) =>
-                            <li key={symbolName + exchangeName}>{ exchangeName} { stats[exchangeName].tradeCount }</li>
-                        )
-                    }
+                    <table className="table">
+                        <tr>
+                            <th>exchange</th>
+                            <th>trades</th>
+                            <th>change</th>
+                        </tr>
+                        <tbody>
+                        {
+                            exchanges.map((exchangeName) =>
+                                <tr key={symbolName + exchangeName}>
+                                    <td>{ exchangeName}</td>
+                                    <td>{ stats[exchangeName].tradeCount }</td>
+                                    <td>
+                                        { stats[exchangeName].change.toFixed(4) } %
+                                        <Glyphicon glyph={"start"}>dsd</Glyphicon>
+                                    </td>
+                                </tr>
+                            )
+                        }
+                        </tbody>
+                    </table>
                 </td>
             </tr>
         );
@@ -35,8 +65,6 @@ class SymbolInfo extends React.Component {
     getSortedKeysByTradesCount(stats) {
         let keys = Object.keys(stats);
         return keys.sort((a,b) => {
-            console.log('sorting a ' + a + ' b ' + b);
-
             let atrades = 0;
             let btrades = 0;
             Object.keys(stats[a]).map((e) => {atrades += stats[a][e].tradeCount});
@@ -48,7 +76,6 @@ class SymbolInfo extends React.Component {
 
     render() {
         let keys = this.getSortedKeysByTradesCount(this.state.symbolStats);
-        //let keys = Object.keys(this.state.symbolStats);
 
         return (
             <div className="well">
