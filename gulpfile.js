@@ -8,9 +8,8 @@ gulp.task('browser-sync', function() {
         proxy: "pndmoni.local",
 
         files: [
-            "public/build/js/*.js",
-            "public/build/js/*.jsx",
-            "public/build/css/*.css",
+            "public/build/js/*.*",
+            "public/build/css/*.*",
             "templates/*.twig"
         ]
     }, function(err, bs) {

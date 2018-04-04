@@ -12,8 +12,8 @@ Containers are configured to create files with group write permission
     sudo bin/docker-ip-helper.sh
 
 The last command will update your `/etc/hosts` file, so you can use container names from 
-your host. If you are on MacOS, this last step is not required. Open http://pnd_nginx/ to 
-see if everything worked fine. The login is `testing/testing`.
+your host. If you are on MacOS and use docker-machine, this last step is not required. 
+Open http://pnd_nginx/ to see if everything worked fine.
  
 If you have `gulp` installed on your host, run it, and your browser should open http://localhost:3000 
 which is a browser-sync session that will automatically refresh if front-end assets get changed. 

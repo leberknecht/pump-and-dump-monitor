@@ -1,12 +1,14 @@
 import SymbolInfo from "./SymbolInfo";
 import React from "react";
 import ReactDOM from "react-dom";
+import AlaSQL from "alasql"
 
 class FeedReader extends React.Component {
     constructor(props) {
         super(props);
 
         const webSocketHost = document.getElementById('root').getAttribute('data-websocket-host');
+        AlaSQL('CREATE TABLE trades (price FLOAT, symbol STRING, time INT)');
         console.log('web-socket host: ' + webSocketHost);
 
         this.togglePause = this.togglePause.bind(this);
@@ -53,6 +55,8 @@ class FeedReader extends React.Component {
             }
         } else {
             let symbolInfo = symbolStats[trade.symbol][trade.exchange];
+            AlaSQL("INSERT INTO trades (price, symbol, time) VALUES("+trade.price +", '"+trade.symbol+"', "+Date.now()+")");
+
             if (symbolInfo.trades.length < 20) {
                 symbolInfo.trades.push(trade);
             } else {

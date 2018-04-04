@@ -1,4 +1,5 @@
 import React from "react";
+import AlaSQL from "alasql"
 
 function TrendIcon(props) {
     let change = props.change;
@@ -47,7 +48,7 @@ class SymbolInfo extends React.Component {
                                             <td>{ exchangeName}</td>
                                             <td>{ stats[exchangeName].tradeCount }</td>
                                             <td>
-                                                { stats[exchangeName].change.toFixed(4) } %
+                                                { stats[exchangeName].change.toFixed(6) } %
                                             </td>
                                             <td>
                                                 <TrendIcon change={ stats[exchangeName].change }/>
@@ -67,20 +68,27 @@ class SymbolInfo extends React.Component {
     getSortedKeysByTradesCount(stats) {
         let keys = Object.keys(stats);
         return keys.sort((a,b) => {
-            let atrades = 0;
-            let btrades = 0;
-            Object.keys(stats[a]).map((e) => {atrades += stats[a][e].tradeCount});
-            Object.keys(stats[b]).map((e) => {btrades += stats[b][e].tradeCount});
-
-            return btrades - atrades
+            let achange = 0;
+            let bchange = 0;
+            Object.keys(stats[a]).map((e) => {achange += stats[a][e].change});
+            Object.keys(stats[b]).map((e) => {bchange += stats[b][e].change});
+            achange = achange / stats[a].length;
+            achange = bchange / stats[b].length;
+            return achange - achange
         });
     }
 
     render() {
         let keys = this.getSortedKeysByTradesCount(this.state.symbolStats);
+        let trades = AlaSQL("SELECT count(1) as overallTradesCount from trades");
+        trades = trades[0].overallTradesCount;
 
         return (
-            keys.map(this.renderSymbol)
+            <div key="symbol-wrapper">
+                <div key="symbol-wrapper-tradescount">Trades: { trades }</div>
+                <div key="symbol-wrapper-symbolinfo"> { keys.map(this.renderSymbol) }</div>
+            </div>
+
         );
     }
 }
