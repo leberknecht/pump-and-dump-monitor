@@ -1,16 +1,15 @@
 import React from "react";
-import { Glyphicon } from "react-bootstrap";
 
 function TrendIcon(props) {
-    // let change = props.change;
-    // if (change > 0) {
-    //     return (
-    //         <Glyphicon glyph="arrow-up" />
-    //     );
-    // }
+    let change = props.change;
+    if (change > 0) {
+        return (
+            <span className="fa fa-arrow-up trend-up" />
+        );
+    }
 
     return (
-        <h1>dud</h1>
+        <span className="fa fa-arrow-down trend-down" />
     );
 }
 
@@ -33,32 +32,35 @@ class SymbolInfo extends React.Component {
         let exchanges = Object.keys(stats);
 
         return (
-            <tr key={ symbolName }>
-                <td key={ "symbol-name" + symbolName}>{ symbolName }</td>
-                <td key={ "exchanges-" + symbolName}>
-                    <table className="table">
-                        <tr>
-                            <th>exchange</th>
-                            <th>trades</th>
-                            <th>change</th>
-                        </tr>
-                        <tbody>
-                        {
-                            exchanges.map((exchangeName) =>
-                                <tr key={symbolName + exchangeName}>
-                                    <td>{ exchangeName}</td>
-                                    <td>{ stats[exchangeName].tradeCount }</td>
-                                    <td>
-                                        { stats[exchangeName].change.toFixed(4) } %
-                                        <Glyphicon glyph={"start"}>dsd</Glyphicon>
-                                    </td>
-                                </tr>
-                            )
-                        }
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
+            <div className="row">
+                <div className="col-12">
+                    <div className="card mb-3" key={ symbolName }>
+                        <div className="card-header" key={ "symbol-name" + symbolName}>
+                            { symbolName }
+                        </div>
+                        <div className="card-body">
+                            <table className="table" key={ "exchanges-" + symbolName}>
+                                <tbody>
+                                {
+                                    exchanges.map((exchangeName) =>
+                                        <tr key={symbolName + exchangeName}>
+                                            <td>{ exchangeName}</td>
+                                            <td>{ stats[exchangeName].tradeCount }</td>
+                                            <td>
+                                                { stats[exchangeName].change.toFixed(4) } %
+                                            </td>
+                                            <td>
+                                                <TrendIcon change={ stats[exchangeName].change }/>
+                                            </td>
+                                        </tr>
+                                    )
+                                }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         );
     }
 
@@ -78,15 +80,7 @@ class SymbolInfo extends React.Component {
         let keys = this.getSortedKeysByTradesCount(this.state.symbolStats);
 
         return (
-            <div className="well">
-                <table>
-                <tbody>
-                  {
-                      keys.map(this.renderSymbol)
-                  }
-                </tbody>
-                </table>
-            </div>
+            keys.map(this.renderSymbol)
         );
     }
 }

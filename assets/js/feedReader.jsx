@@ -8,9 +8,12 @@ class FeedReader extends React.Component {
 
         const webSocketHost = document.getElementById('root').getAttribute('data-websocket-host');
         console.log('web-socket host: ' + webSocketHost);
+
+        this.togglePause = this.togglePause.bind(this);
         this.state = {
             trades: [],
             symbolStats: [],
+            pause: false,
             webSocketHost: webSocketHost
         };
     }
@@ -23,10 +26,13 @@ class FeedReader extends React.Component {
             }
 
             let trade = JSON.parse(evt.data);
-            this.handleTrade(trade);
-            this.setState({
-                trades : this.state.trades.concat([ trade ])
-            })
+
+            if (!this.state.pause) {
+                this.handleTrade(trade);
+                this.setState({
+                    trades : this.state.trades.concat([ trade ])
+                })
+            }
         };
     }
 
@@ -60,11 +66,19 @@ class FeedReader extends React.Component {
         this.state.symbolStats = symbolStats;
     }
 
+    togglePause(event) {
+        if (event) {
+            event.preventDefault();
+        }
+        this.state.pause = !this.state.pause;
+    }
+
     render() {
         return (
             <div className="row">
                 <div className="col-md-4">
                     <h2>last trades</h2>
+                    <button onClick={this.togglePause}>Pause</button>
                     <span className="glyphicon glyphicon-asterisk" />
                     <table className="table">
                         <tbody>
