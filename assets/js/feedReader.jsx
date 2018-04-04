@@ -8,7 +8,7 @@ class FeedReader extends React.Component {
         super(props);
 
         const webSocketHost = document.getElementById('root').getAttribute('data-websocket-host');
-        AlaSQL('CREATE TABLE trades (price FLOAT, symbol STRING, time INT)');
+        AlaSQL('CREATE TABLE trades (price FLOAT, symbol STRING, time INT, change FLOAT)');
         console.log('web-socket host: ' + webSocketHost);
 
         this.togglePause = this.togglePause.bind(this);
@@ -42,11 +42,14 @@ class FeedReader extends React.Component {
         let symbolStats  = this.state.symbolStats;
 
         if ( !(trade.symbol in symbolStats) ) {
-            symbolStats[trade.symbol] = []
+            symbolStats[trade.symbol] = {
+                'averageChange': 0,
+                'exchanges': []
+            }
         }
 
         if ( !(trade.exchange in symbolStats[trade.symbol]) ) {
-            symbolStats[trade.symbol][trade.exchange] =  {
+            symbolStats[trade.symbol].exchanges[trade.exchange] =  {
                 trades: [ trade ],
                 tradeCount: 0,
                 lastPrice: trade.price,
@@ -54,8 +57,7 @@ class FeedReader extends React.Component {
                 lastChanges: []
             }
         } else {
-            let symbolInfo = symbolStats[trade.symbol][trade.exchange];
-            AlaSQL("INSERT INTO trades (price, symbol, time) VALUES("+trade.price +", '"+trade.symbol+"', "+Date.now()+")");
+            let symbolInfo = symbolStats[trade.symbol].exchanges[trade.exchange];
 
             if (symbolInfo.trades.length < 20) {
                 symbolInfo.trades.push(trade);
@@ -64,7 +66,13 @@ class FeedReader extends React.Component {
             }
             symbolInfo.change = (trade.price / symbolInfo.lastPrice) - 1;
             symbolInfo.tradeCount++;
-            symbolStats[trade.symbol][trade.exchange] = symbolInfo;
+            AlaSQL("INSERT INTO trades (price, symbol, time, change) VALUES(" +
+                trade.price + ",'" +
+                trade.symbol+ "', "+
+                Date.now() + "," +
+                symbolInfo.change.toFixed(8) + ")"
+            );
+            symbolStats[trade.symbol].exchanges[trade.exchange] = symbolInfo;
         }
 
         this.state.symbolStats = symbolStats;

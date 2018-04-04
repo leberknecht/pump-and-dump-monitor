@@ -29,7 +29,7 @@ class SymbolInfo extends React.Component {
     }
 
     renderSymbol(symbolName) {
-        let stats = this.state.symbolStats[symbolName];
+        let stats = this.state.symbolStats[symbolName].exchanges;
         let exchanges = Object.keys(stats);
 
         return (
@@ -38,6 +38,7 @@ class SymbolInfo extends React.Component {
                     <div className="card mb-3" key={ symbolName }>
                         <div className="card-header" key={ "symbol-name" + symbolName}>
                             { symbolName }
+                            <small>avg: { this.state.symbolStats[symbolName].averageChange.toFixed(6) } %</small>
                         </div>
                         <div className="card-body">
                             <table className="table" key={ "exchanges-" + symbolName}>
@@ -68,19 +69,26 @@ class SymbolInfo extends React.Component {
     getSortedKeysByTradesCount(stats) {
         let keys = Object.keys(stats);
         return keys.sort((a,b) => {
-            let achange = 0;
-            let bchange = 0;
-            Object.keys(stats[a]).map((e) => {achange += stats[a][e].change});
-            Object.keys(stats[b]).map((e) => {bchange += stats[b][e].change});
-            achange = achange / stats[a].length;
-            achange = bchange / stats[b].length;
-            return achange - achange
+            if (stats[a].averageChange && stats[b].averageChange) {
+                return stats[a].averageChange - stats[b].averageChange
+            }
+
+            return 0;
         });
     }
 
     render() {
-        let keys = this.getSortedKeysByTradesCount(this.state.symbolStats);
         let trades = AlaSQL("SELECT count(1) as overallTradesCount from trades");
+        //30 seconds
+        let averageChanges = AlaSQL("SELECT AVG(change) as averageChange, symbol FROM trades WHERE time > " + (Date.now() - (30 * 1000)) + " GROUP BY symbol");
+        for (let i = 0; i < averageChanges.length; i++) {
+            let item = averageChanges[i];
+            if (this.state.symbolStats[item.symbol]) {
+                this.state.symbolStats[item.symbol].averageChange = item.averageChange;
+            }
+        }
+
+        let keys = this.getSortedKeysByTradesCount(this.state.symbolStats);
         trades = trades[0].overallTradesCount;
 
         return (
