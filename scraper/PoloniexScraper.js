@@ -138,9 +138,7 @@ class PoloniexScraper {
                         quoteVolumeTraded *= -1;
                     }
                     let volume = baseVolumeTraded + quoteVolumeTraded;
-                    if (volume !== 0) {
-                        tradePusher.send('poloniex', map[msg[2][0]].replace('_','-'), volume, msg[2][1])
-                    }
+                    tradePusher.send('poloniex', map[msg[2][0]].replace('_','-'), volume, msg[2][1])
                 }
 
                 this.baseVolume[msg[2][0]] = msg[2][5];

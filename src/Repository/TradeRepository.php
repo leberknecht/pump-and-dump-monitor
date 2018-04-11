@@ -25,12 +25,13 @@ class TradeRepository extends ServiceEntityRepository
             SELECT 
                 count(1) as tradeCount, 
                 AVG(price) as price,
-                SUM(volume) as volume,
-                SUM(percentual_change) as percentualChange,
-                symbol
+                SUM(volume) * AVG(price) as volume,
+                SUM(percent_change) as percentChange,
+                symbol,
+                exchange
             FROM trade 
             WHERE trade.time > :timeOffset
-            GROUP by trade.symbol
+            GROUP by trade.symbol, trade.exchange
         ');
         $timeOffset = (new \DateTime('-1 hour'))->format('Y-m-d H:i:s');
         $statement->bindParam(':timeOffset', $timeOffset);

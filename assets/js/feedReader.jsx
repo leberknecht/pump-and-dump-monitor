@@ -51,6 +51,9 @@ class FeedReader extends React.Component {
                 tradeCount: 0,
                 lastPrice: trade.price,
                 change: 0,
+                accumulatedPercentChange: 0,
+                accumulatedVolume: 0,
+                accumulatedPrice: 0,
                 lastChanges: []
             }
         } else {
@@ -81,7 +84,6 @@ class FeedReader extends React.Component {
             <div className="row">
                 <div className="col-md-4">
                     <h2>last trades</h2>
-                    <button onClick={this.togglePause}>Pause</button>
                     <span className="glyphicon glyphicon-asterisk" />
                     <table className="table">
                         <tbody>
@@ -96,6 +98,7 @@ class FeedReader extends React.Component {
                         }
                         </tbody>
                     </table>
+                    <span className="fa fa-pause" onClick={this.togglePause} />
                 </div>
                 <div className="col-md-8">
                     <h2>Symbol</h2>

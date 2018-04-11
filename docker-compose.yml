@@ -8,7 +8,7 @@ services:
       - pnd_rabbitmq
     volumes:
       - ./:/code
-    command: node scraper/BitstampScraper.js
+    command: wait-for-it pnd_rabbitmq:5672 -- node scraper/BitstampScraper.js
 
   pnd_scraper_binance:
     build: docker/nodejs
@@ -17,7 +17,7 @@ services:
       - pnd_rabbitmq
     volumes:
       - ./:/code
-    command: node scraper/BinanceScraper.js
+    command: wait-for-it pnd_rabbitmq:5672 -- node scraper/BinanceScraper.js
 
   pnd_scraper_poloniex:
     build: docker/nodejs
@@ -26,7 +26,7 @@ services:
       - pnd_rabbitmq
     volumes:
       - ./:/code
-    command: node scraper/PoloniexScraper.js
+    command: wait-for-it pnd_rabbitmq:5672 -- node scraper/PoloniexScraper.js
 
   pnd_rabbitmq:
     image: rabbitmq:management
@@ -44,7 +44,7 @@ services:
       - pnd_phpfpm
     expose:
       - '80'
-    command: wait-for-it pnd_phpfpm:9000 -- wait-for-it pnd_websocket_server:8081 -- nginx
+    command: wait-for-it pnd_phpfpm:9000 -- nginx
 
   pnd_websocket_server:
     build: docker/nodejs
@@ -53,7 +53,6 @@ services:
       - '8081'
     volumes:
       - ./:/code
-    restart: unless-stopped
     command: node scraper/WebsocketServer.js
 
   pnd_phpfpm:

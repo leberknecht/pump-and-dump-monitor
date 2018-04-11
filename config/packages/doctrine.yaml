@@ -12,7 +12,6 @@ doctrine:
         server_version: '5.7'
         charset: utf8mb4
         logging: false
-
         # With Symfony 3.3, remove the `resolve:` prefix
         url: '%env(resolve:DATABASE_URL)%'
     orm:

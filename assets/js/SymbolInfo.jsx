@@ -31,8 +31,15 @@ class SymbolInfo extends React.Component {
 
         Axios.get(this.state.symbolStatusUrl)
             .then(res => {
-                const highRaiseSymbols = res.data;
-                component.setState({ highRaises: highRaiseSymbols });
+                let currentStats = this.state.symbolStats;
+                res.data.map(entry =>{
+                    if (entry.symbol in currentStats && entry.exchange in currentStats[entry.symbol]) {
+                        currentStats[entry.symbol][entry.exchange].accumulatedPrice = Number(entry['price']);
+                        currentStats[entry.symbol][entry.exchange].accumulatedPercentChange = Number(entry['percentChange']);
+                        currentStats[entry.symbol][entry.exchange].accumulatedVolume = Number(entry['volume']);
+                    }
+                });
+                component.setState({ symbolStats: currentStats });
             });
     }
 
@@ -50,14 +57,14 @@ class SymbolInfo extends React.Component {
         let exchanges = Object.keys(stats);
 
         return (
-            <div className="row">
+            <div className="row" key={"row-" + symbolName }>
                 <div className="col-12">
                     <div className="card mb-3" key={ symbolName }>
-                        <div className="card-header" key={ "symbol-name" + symbolName}>
-                            { symbolName }
+                        <div className="card-header">
+                            <strong>{ symbolName }</strong>
                         </div>
                         <div className="card-body">
-                            <table className="table" key={ "exchanges-" + symbolName}>
+                            <table className="table" >
                                 <tbody>
                                 {
                                     exchanges.map((exchangeName) =>
@@ -69,6 +76,12 @@ class SymbolInfo extends React.Component {
                                             </td>
                                             <td>
                                                 <TrendIcon change={ stats[exchangeName].change }/>
+                                            </td>
+                                            <td>
+                                                <h4>Last hour stats:</h4>
+                                                Volume: { Number(stats[exchangeName].accumulatedVolume).toFixed(4) }<br/>
+                                                Change: { Number(stats[exchangeName].accumulatedPercentChange).toFixed(4) } %<br/>
+                                                Average Price: { Number(stats[exchangeName].accumulatedPrice).toFixed(5) }<br/>
                                             </td>
                                         </tr>
                                     )
@@ -82,21 +95,22 @@ class SymbolInfo extends React.Component {
         );
     }
 
-    getSortedKeysByPercentualChange(stats) {
+    getSortedKeysAccumulatedChange(stats) {
         let keys = Object.keys(stats);
         return keys.sort((a,b) => {
-            let achange = 0;
-            let bchange = 0;
-            Object.keys(stats[a]).map((e) => {achange += stats[a][e].change});
-            Object.keys(stats[b]).map((e) => {bchange += stats[b][e].change});
-            achange = achange / stats[a].length;
-            achange = bchange / stats[b].length;
-            return achange - achange
+            let aVal = 0;
+            let bVal = 0;
+            Object.keys(stats[a]).map((exchange) => {aVal += stats[a][exchange].accumulatedPercentChange});
+            Object.keys(stats[b]).map((exchange) => {bVal += stats[b][exchange].accumulatedPercentChange});
+
+            aVal = aVal / Object.keys(stats[a]).length;
+            bVal = bVal / Object.keys(stats[b]).length;
+            return bVal - aVal;
         });
     }
 
     render() {
-        let keys = this.getSortedKeysByPercentualChange(this.state.symbolStats);
+        let keys = this.getSortedKeysAccumulatedChange(this.state.symbolStats);
 
         return (
             keys.map(this.renderSymbol)

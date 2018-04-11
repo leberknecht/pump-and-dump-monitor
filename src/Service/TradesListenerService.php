@@ -50,7 +50,7 @@ class TradesListenerService extends BaseService implements ConsumerInterface
         $lastPrice = $this->cache->getItem($trade->getSymbol() . $trade->getExchange());
 
         if ($lastPrice->isHit()) {
-            $trade->setPercentualChange((($trade->getPrice() / $lastPrice->get()) - 1) * 100);
+            $trade->setPercentChange((($trade->getPrice() / $lastPrice->get()) - 1) * 100);
         }
 
         $lastPrice->set($trade->getPrice());

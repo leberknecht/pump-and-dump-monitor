@@ -34,7 +34,7 @@ class Trade
     /**
      * @ORM\Column(type="float", nullable=true)
      */
-    private $percentualChange;
+    private $percentChange;
 
     /**
      * @ORM\Column(type="string")
@@ -88,14 +88,14 @@ class Trade
         return $this;
     }
 
-    public function getPercentualChange(): ?float
+    public function getPercentChange(): ?float
     {
-        return $this->percentualChange;
+        return $this->percentChange;
     }
 
-    public function setPercentualChange(?float $percentualChange): self
+    public function setPercentChange(?float $percentChange): self
     {
-        $this->percentualChange = $percentualChange;
+        $this->percentChange = $percentChange;
 
         return $this;
     }
