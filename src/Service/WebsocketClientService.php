@@ -11,9 +11,9 @@ class WebsocketClientService extends BaseService
      */
     private $client;
 
-    public function __construct(Client $client)
+    public function __construct(Client $websocketClient)
     {
-        $this->client = $client;
+        $this->client = $websocketClient;
     }
 
     public function send($message)

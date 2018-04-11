@@ -5,3 +5,7 @@
 front_page:
     path: /
     controller: App\Controller\FrontPageController::mainPage
+
+symbols_status:
+    path: /api/symbols
+    controller: App\Controller\FrontPageController::symbolsStatus

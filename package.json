@@ -16,8 +16,8 @@
         "build": "encore production"
     },
     "dependencies": {
-        "alasql": "^0.4.5",
         "amqplib": "^0.5.2",
+        "axios": "^0.18.0",
         "css-loader": "^0.28.11",
         "fs": "^0.0.1-security",
         "js-yaml": "^3.11.0",

@@ -35,20 +35,27 @@ services:
         arguments:
             - '%websocket_host%'
 
+    App\Service\BaseService:
+        abstract: true
+        calls:
+            - [ 'setLogger', [ '@logger' ] ]
+            - [ 'setEntityManager', [ '@doctrine.orm.entity_manager' ] ]
+
     App\Service\TradesListenerService:
         autowire: false
         autoconfigure: false
         public: true
-        parent: 'App\Service\BaseService'
+        parent: App\Service\BaseService
         arguments:
           - '@App\Service\WebsocketClientService'
           - '%secret%'
+          - '@cache.app'
 
     App\Service\WebsocketClientService:
         autowire: false
         autoconfigure: false
         public: true
-        parent: 'App\Service\BaseService'
+        parent: App\Service\BaseService
         arguments:
           - '@websocket_client'
 

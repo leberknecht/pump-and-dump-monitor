@@ -1,5 +1,4 @@
 const tradePusher = require(__dirname + '/TradePusher');
-const fs = require('fs');
 const process = require('process');
 const WebSocket = require('ws');
 
@@ -107,30 +106,59 @@ const map = {
 
 class PoloniexScraper {
     constructor(poloniexSocket) {
+        this.baseVolume = [];
+        this.quoteVolume = [];
         this.websocket = poloniexSocket;
-        this.websocket.onmessage = this.onMessage;
-        this.websocket.onclose = this.onClose;
-        this.websocket.onopen = this.onOpen;
+        this.websocket.onmessage = this.onMessage.bind(this);
+        this.websocket.onclose = PoloniexScraper.onClose;
+        this.websocket.onopen = PoloniexScraper.onOpen;
     }
 
     onMessage(msg) {
         msg = JSON.parse(msg.data);
         if (3 === msg.length) {
             if (map[msg[2][0]]) {
-                tradePusher.send('poloniex', map[msg[2][0]].replace('_','-'), msg[2][6], msg[2][1])
+                if (!(msg[2][0] in this.baseVolume)) {
+                    this.baseVolume[msg[2][0]] = msg[2][5];
+                    this.quoteVolume[msg[2][0]] = msg[2][6];
+                } else {
+                    let baseVolumeTraded = 0;
+                    let quoteVolumeTraded = 0;
+                    if (this.baseVolume[msg[2][0]] !== msg[2][5]) {
+                        baseVolumeTraded = this.baseVolume[msg[2][0]] - msg[2][5];
+                    }
+
+                    if (this.quoteVolume[msg[2][0]] !== msg[2][6]) {
+                        quoteVolumeTraded = this.quoteVolume[msg[2][0]] - msg[2][6];
+                    }
+                    if (baseVolumeTraded < 0) {
+                        baseVolumeTraded *= -1;
+                    }
+                    if (quoteVolumeTraded < 0) {
+                        quoteVolumeTraded *= -1;
+                    }
+                    let volume = baseVolumeTraded + quoteVolumeTraded;
+                    if (volume !== 0) {
+                        tradePusher.send('poloniex', map[msg[2][0]].replace('_','-'), volume, msg[2][1])
+                    }
+                }
+
+                this.baseVolume[msg[2][0]] = msg[2][5];
+                this.quoteVolume[msg[2][0]] = msg[2][6];
+
             } else {
                 console.log('unknown symbol: ' + msg[2][0] + ' @ ' + msg[2][1])
             }
         }
     };
 
-    onClose(ev)
+    static onClose()
     {
         console.log('socket closed');
         process.exit(1);
     };
 
-    onOpen() {
+    static onOpen() {
         this.send(JSON.stringify({
             command: 'subscribe',
             channel: '1002',
@@ -138,4 +166,4 @@ class PoloniexScraper {
     };
 }
 
-let poloniexScraper = new PoloniexScraper(new WebSocket("wss://api2.poloniex.com"));
+new PoloniexScraper(new WebSocket("wss://api2.poloniex.com"));

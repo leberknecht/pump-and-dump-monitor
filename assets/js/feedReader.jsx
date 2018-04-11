@@ -1,22 +1,22 @@
 import SymbolInfo from "./SymbolInfo";
 import React from "react";
 import ReactDOM from "react-dom";
-import AlaSQL from "alasql"
+import Axios from 'axios';
 
 class FeedReader extends React.Component {
     constructor(props) {
         super(props);
 
         const webSocketHost = document.getElementById('root').getAttribute('data-websocket-host');
-        AlaSQL('CREATE TABLE trades (price FLOAT, symbol STRING, time INT)');
-        console.log('web-socket host: ' + webSocketHost);
-
+        const symbolStatusUrl = document.getElementById('root').getAttribute('data-symbol-status-url');
         this.togglePause = this.togglePause.bind(this);
         this.state = {
             trades: [],
             symbolStats: [],
             pause: false,
-            webSocketHost: webSocketHost
+            started: Date.now() / 1000,
+            webSocketHost: webSocketHost,
+            symbolStatusUrl: symbolStatusUrl
         };
     }
 
@@ -55,14 +55,13 @@ class FeedReader extends React.Component {
             }
         } else {
             let symbolInfo = symbolStats[trade.symbol][trade.exchange];
-            AlaSQL("INSERT INTO trades (price, symbol, time) VALUES("+trade.price +", '"+trade.symbol+"', "+Date.now()+")");
 
             if (symbolInfo.trades.length < 20) {
                 symbolInfo.trades.push(trade);
             } else {
                 symbolInfo.trades.shift();
             }
-            symbolInfo.change = (trade.price / symbolInfo.lastPrice) - 1;
+            symbolInfo.change = ((trade.price / symbolInfo.lastPrice) - 1) * 100;
             symbolInfo.tradeCount++;
             symbolStats[trade.symbol][trade.exchange] = symbolInfo;
         }
@@ -100,7 +99,7 @@ class FeedReader extends React.Component {
                 </div>
                 <div className="col-md-8">
                     <h2>Symbol</h2>
-                    <SymbolInfo symbolStats={ this.state.symbolStats }/>
+                    <SymbolInfo symbolStatusUrl={ this.state.symbolStatusUrl } symbolStats={ this.state.symbolStats }/>
                 </div>
             </div>
         )

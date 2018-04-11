@@ -5,7 +5,7 @@ namespace App\Service;
 use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
 
-class BaseService
+abstract class BaseService
 {
     /** @var  LoggerInterface */
     protected $logger;

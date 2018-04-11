@@ -7,7 +7,10 @@
 
 {% block body %}
     <div class="container">
-        <div id="root" data-websocket-host="{{ websocket_host }}">
+        <div id="root"
+             data-websocket-host="{{ websocket_host }}"
+             data-symbol-status-url="{{ path('symbols_status') }}"
+        >
 
         </div>
     </div>

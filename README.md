@@ -8,6 +8,8 @@ Containers are configured to create files with group write permission
     docker-compose run pnd_phpfpm composer install
     docker-compose run pnd_scraper_bitstamp yarn install
     docker-compose run -d pnd_scraper_bitstamp yarn encore dev --watch
+    docker-compose run pnd_phpfpm php bin/console doctrine:database:create 
+    docker-compose run pnd_phpfpm php bin/console doctrine:migrations:migrate -n 
     docker-compose up -d 
     sudo bin/docker-ip-helper.sh
 

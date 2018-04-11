@@ -1,5 +1,5 @@
 import React from "react";
-import AlaSQL from "alasql"
+import Axios from 'axios';
 
 function TrendIcon(props) {
     let change = props.change;
@@ -18,13 +18,30 @@ class SymbolInfo extends React.Component {
     constructor(props) {
         super(props);
 
+        this.refreshSymbolStatusData = this.refreshSymbolStatusData.bind(this);
         this.renderSymbol = this.renderSymbol.bind(this);
         this.state = {
             symbolStats: props.symbolStats,
+            symbolStatusUrl: props.symbolStatusUrl
         };
     }
 
-    shouldComponentUpdate(nextProps) {
+    refreshSymbolStatusData() {
+        let component = this;
+
+        Axios.get(this.state.symbolStatusUrl)
+            .then(res => {
+                const highRaiseSymbols = res.data;
+                component.setState({ highRaises: highRaiseSymbols });
+            });
+    }
+
+    componentDidMount() {
+        this.refreshSymbolStatusData();
+        this.interval = setInterval(this.refreshSymbolStatusData, 5000)
+    }
+
+    shouldComponentUpdate() {
         return Math.random() > 0.95;
     }
 
@@ -65,7 +82,7 @@ class SymbolInfo extends React.Component {
         );
     }
 
-    getSortedKeysByTradesCount(stats) {
+    getSortedKeysByPercentualChange(stats) {
         let keys = Object.keys(stats);
         return keys.sort((a,b) => {
             let achange = 0;
@@ -79,16 +96,10 @@ class SymbolInfo extends React.Component {
     }
 
     render() {
-        let keys = this.getSortedKeysByTradesCount(this.state.symbolStats);
-        let trades = AlaSQL("SELECT count(1) as overallTradesCount from trades");
-        trades = trades[0].overallTradesCount;
+        let keys = this.getSortedKeysByPercentualChange(this.state.symbolStats);
 
         return (
-            <div key="symbol-wrapper">
-                <div key="symbol-wrapper-tradescount">Trades: { trades }</div>
-                <div key="symbol-wrapper-symbolinfo"> { keys.map(this.renderSymbol) }</div>
-            </div>
-
+            keys.map(this.renderSymbol)
         );
     }
 }

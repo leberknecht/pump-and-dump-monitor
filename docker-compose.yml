@@ -42,15 +42,15 @@ services:
       - NGINX_HOST=pndmoni.local
     links:
       - pnd_phpfpm
-    ports:
-      - '80:80'
+    expose:
+      - '80'
     command: wait-for-it pnd_phpfpm:9000 -- wait-for-it pnd_websocket_server:8081 -- nginx
 
   pnd_websocket_server:
     build: docker/nodejs
     user: www-data
-    ports:
-      - '8081:8081'
+    expose:
+      - '8081'
     volumes:
       - ./:/code
     restart: unless-stopped
@@ -61,10 +61,11 @@ services:
     user: www-data
     links:
       - pnd_rabbitmq
+      - pnd_db
     volumes:
       - ./:/code
       - ./docker/php/phpfpm.conf:/usr/local/etc/php-fpm.d/www.conf
-    command: wait-for-it pnd_rabbitmq:5672 -- php-fpm
+    command: wait-for-it pnd_db:3306 -- wait-for-it pnd_rabbitmq:5672 -- php-fpm
 
   pnd_trades_listener:
     build: docker/php
@@ -72,7 +73,24 @@ services:
     links:
       - pnd_rabbitmq
       - pnd_websocket_server
+      - pnd_db
     volumes:
       - ./:/code
     restart: unless-stopped
-    command: wait-for-it pnd_rabbitmq:5672 -- wait-for-it -t 30 pnd_websocket_server:8081 -- bin/console rabbitmq:consumer trades_listener -m 50000 -vvv
+    command: wait-for-it pnd_db:3306 -- wait-for-it pnd_rabbitmq:5672 -- wait-for-it -t 30 pnd_websocket_server:8081 -- bin/console rabbitmq:consumer trades_listener -m 50000 -vvv
+
+  pnd_db:
+    image: mariadb:10.3.5
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    command: mysqld --sql-mode=NO_ENGINE_SUBSTITUTION --innodb-table-locks=0
+    expose:
+      - "3306"
+
+  pnd_redis:
+    image: redis
+
+volumes:
+    db_data:
