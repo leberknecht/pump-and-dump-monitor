@@ -10,14 +10,17 @@ services:
       - ./:/code
     command: wait-for-it pnd_rabbitmq:5672 -- node scraper/BitstampScraper.js
 
-  pnd_scraper_binance:
-    build: docker/nodejs
-    user: www-data
-    links:
-      - pnd_rabbitmq
-    volumes:
-      - ./:/code
-    command: wait-for-it pnd_rabbitmq:5672 -- node scraper/BinanceScraper.js
+# Binance has a lot of traffic (50-100 trades per second), if your system
+# can manage this, feel free to un-comment this block
+
+#  pnd_scraper_binance:
+#    build: docker/nodejs
+#    user: www-data
+#    links:
+#      - pnd_rabbitmq
+#    volumes:
+#      - ./:/code
+#    command: wait-for-it pnd_rabbitmq:5672 -- node scraper/BinanceScraper.js
 
   pnd_scraper_poloniex:
     build: docker/nodejs
@@ -27,6 +30,16 @@ services:
     volumes:
       - ./:/code
     command: wait-for-it pnd_rabbitmq:5672 -- node scraper/PoloniexScraper.js
+
+  pnd_scraper_bittrex:
+    build: docker/nodejs
+    user: www-data
+    restart: unless-stopped
+    links:
+      - pnd_rabbitmq
+    volumes:
+      - ./:/code
+    command: wait-for-it pnd_rabbitmq:5672 -- node scraper/BittrexScraper.js
 
   pnd_rabbitmq:
     image: rabbitmq:management
@@ -49,6 +62,7 @@ services:
   pnd_websocket_server:
     build: docker/nodejs
     user: www-data
+    restart: unless-stopped
     expose:
       - '8081'
     volumes:

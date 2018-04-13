@@ -15,7 +15,10 @@ class FrontPageController extends Controller
 
     public function symbolsStatus()
     {
-        $data = $this->getDoctrine()->getRepository(Trade::class)->findSymbolStatusData();
+        $data['60'] = $this->getDoctrine()->getRepository(Trade::class)->findSymbolStatusData('-1 hour');
+        $data['30'] = $this->getDoctrine()->getRepository(Trade::class)->findSymbolStatusData('-30 min');
+        $data['10'] = $this->getDoctrine()->getRepository(Trade::class)->findSymbolStatusData('-10 min');
+        $data['5'] = $this->getDoctrine()->getRepository(Trade::class)->findSymbolStatusData('-5 min');
         return new Response(json_encode($data));
     }
 }

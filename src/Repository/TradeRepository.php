@@ -19,7 +19,7 @@ class TradeRepository extends ServiceEntityRepository
         parent::__construct($registry, Trade::class);
     }
 
-    public function findSymbolStatusData()
+    public function findSymbolStatusData($timeOffset)
     {
         $statement = $this->getEntityManager()->getConnection()->prepare('
             SELECT 
@@ -33,7 +33,7 @@ class TradeRepository extends ServiceEntityRepository
             WHERE trade.time > :timeOffset
             GROUP by trade.symbol, trade.exchange
         ');
-        $timeOffset = (new \DateTime('-1 hour'))->format('Y-m-d H:i:s');
+        $timeOffset = (new \DateTime($timeOffset))->format('Y-m-d H:i:s');
         $statement->bindParam(':timeOffset', $timeOffset);
         $statement->execute();
 

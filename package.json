@@ -5,7 +5,9 @@
         "browser-sync": "^2.23.6",
         "gulp": "^3.9.1",
         "jquery": "^3.3.1",
-        "popper": "^1.0.1"
+        "node-sass": "^4.8.3",
+        "popper": "^1.0.1",
+        "sass-loader": "^6.0.7"
     },
     "license": "UNLICENSED",
     "private": true,
@@ -19,8 +21,10 @@
         "amqplib": "^0.5.2",
         "axios": "^0.18.0",
         "css-loader": "^0.28.11",
+        "dotenv": "^5.0.1",
         "fs": "^0.0.1-security",
         "js-yaml": "^3.11.0",
+        "node.bittrex.api": "^1.0.0",
         "popper.js": "^1.14.1",
         "prop-types": "^15.6.1",
         "pusher-js": "^4.2.2",

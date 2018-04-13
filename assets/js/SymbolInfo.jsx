@@ -1,18 +1,7 @@
 import React from "react";
 import Axios from 'axios';
 
-function TrendIcon(props) {
-    let change = props.change;
-    if (change > 0) {
-        return (
-            <span className="fa fa-arrow-up trend-up" />
-        );
-    }
-
-    return (
-        <span className="fa fa-arrow-down trend-down" />
-    );
-}
+import SymbolStats from "./SymbolStats"
 
 class SymbolInfo extends React.Component {
     constructor(props) {
@@ -32,13 +21,16 @@ class SymbolInfo extends React.Component {
         Axios.get(this.state.symbolStatusUrl)
             .then(res => {
                 let currentStats = this.state.symbolStats;
-                res.data.map(entry =>{
-                    if (entry.symbol in currentStats && entry.exchange in currentStats[entry.symbol]) {
-                        currentStats[entry.symbol][entry.exchange].accumulatedPrice = Number(entry['price']);
-                        currentStats[entry.symbol][entry.exchange].accumulatedPercentChange = Number(entry['percentChange']);
-                        currentStats[entry.symbol][entry.exchange].accumulatedVolume = Number(entry['volume']);
-                    }
+                Object.keys(res.data).map(timeSpan => {
+                    res.data[timeSpan].map(entry =>{
+                        if (entry.symbol in currentStats && entry.exchange in currentStats[entry.symbol]) {
+                            currentStats[entry.symbol][entry.exchange].stats[timeSpan].price = Number(entry['price']);
+                            currentStats[entry.symbol][entry.exchange].stats[timeSpan].volume = Number(entry['volume']);
+                            currentStats[entry.symbol][entry.exchange].stats[timeSpan].change = Number(entry['percentChange']);
+                        }
+                    });
                 });
+
                 component.setState({ symbolStats: currentStats });
             });
     }
@@ -57,37 +49,14 @@ class SymbolInfo extends React.Component {
         let exchanges = Object.keys(stats);
 
         return (
-            <div className="row" key={"row-" + symbolName }>
+            <div className="row symbol-info" key={"row-" + symbolName }>
                 <div className="col-12">
                     <div className="card mb-3" key={ symbolName }>
                         <div className="card-header">
                             <strong>{ symbolName }</strong>
                         </div>
                         <div className="card-body">
-                            <table className="table" >
-                                <tbody>
-                                {
-                                    exchanges.map((exchangeName) =>
-                                        <tr key={symbolName + exchangeName}>
-                                            <td>{ exchangeName}</td>
-                                            <td>{ stats[exchangeName].tradeCount }</td>
-                                            <td>
-                                                { stats[exchangeName].change.toFixed(6) } %
-                                            </td>
-                                            <td>
-                                                <TrendIcon change={ stats[exchangeName].change }/>
-                                            </td>
-                                            <td>
-                                                <h4>Last hour stats:</h4>
-                                                Volume: { Number(stats[exchangeName].accumulatedVolume).toFixed(4) }<br/>
-                                                Change: { Number(stats[exchangeName].accumulatedPercentChange).toFixed(4) } %<br/>
-                                                Average Price: { Number(stats[exchangeName].accumulatedPrice).toFixed(5) }<br/>
-                                            </td>
-                                        </tr>
-                                    )
-                                }
-                                </tbody>
-                            </table>
+                            <SymbolStats stats={ stats } exchanges={ exchanges } symbolName={ symbolName } />
                         </div>
                     </div>
                 </div>
@@ -100,8 +69,8 @@ class SymbolInfo extends React.Component {
         return keys.sort((a,b) => {
             let aVal = 0;
             let bVal = 0;
-            Object.keys(stats[a]).map((exchange) => {aVal += stats[a][exchange].accumulatedPercentChange});
-            Object.keys(stats[b]).map((exchange) => {bVal += stats[b][exchange].accumulatedPercentChange});
+            Object.keys(stats[a]).map((exchange) => {aVal += stats[a][exchange].stats[10].change});
+            Object.keys(stats[b]).map((exchange) => {bVal += stats[b][exchange].stats[10].change});
 
             aVal = aVal / Object.keys(stats[a]).length;
             bVal = bVal / Object.keys(stats[b]).length;

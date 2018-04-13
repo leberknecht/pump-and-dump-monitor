@@ -5,6 +5,7 @@ Encore
     .setOutputPath('public/build/')
     // the public path used by the web server to access the previous directory
     .setPublicPath('/build')
+    .enableSassLoader()
     .cleanupOutputBeforeBuild()
     .enableSourceMaps(!Encore.isProduction())
     //.enableVersioning(Encore.isProduction())
@@ -12,9 +13,6 @@ Encore
     .addEntry('js/feedReader', './assets/js/feedReader.jsx')
     .enableReactPreset()
     .addStyleEntry('css/bootstrap', './assets/css/bootstrap.css')
-
-    // uncomment if you use Sass/SCSS files
-    // .enableSassLoader()
 
     // uncomment for legacy applications that require $/jQuery as a global variable
     // .autoProvidejQuery()

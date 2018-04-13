@@ -1,7 +1,6 @@
 import SymbolInfo from "./SymbolInfo";
 import React from "react";
 import ReactDOM from "react-dom";
-import Axios from 'axios';
 
 class FeedReader extends React.Component {
     constructor(props) {
@@ -51,9 +50,28 @@ class FeedReader extends React.Component {
                 tradeCount: 0,
                 lastPrice: trade.price,
                 change: 0,
-                accumulatedPercentChange: 0,
-                accumulatedVolume: 0,
-                accumulatedPrice: 0,
+                stats: {
+                    60: {
+                        price: 0,
+                        change: 0,
+                        volume: 0,
+                    },
+                    30: {
+                        price: 0,
+                        change: 0,
+                        volume: 0,
+                    },
+                    10: {
+                        price: 0,
+                        change: 0,
+                        volume: 0,
+                    },
+                    5: {
+                        price: 0,
+                        change: 0,
+                        volume: 0,
+                    }
+                },
                 lastChanges: []
             }
         } else {
@@ -84,6 +102,7 @@ class FeedReader extends React.Component {
             <div className="row">
                 <div className="col-md-4">
                     <h2>last trades</h2>
+                    <small><span className="pull-right fa fa-pause" onClick={this.togglePause} /></small>
                     <span className="glyphicon glyphicon-asterisk" />
                     <table className="table">
                         <tbody>
@@ -98,11 +117,10 @@ class FeedReader extends React.Component {
                         }
                         </tbody>
                     </table>
-                    <span className="fa fa-pause" onClick={this.togglePause} />
                 </div>
                 <div className="col-md-8">
                     <h2>Symbol</h2>
-                    <SymbolInfo symbolStatusUrl={ this.state.symbolStatusUrl } symbolStats={ this.state.symbolStats }/>
+                    <SymbolInfo symbolStatusUrl={ this.state.symbolStatusUrl } symbolStats={ this.state.symbolStats } />
                 </div>
             </div>
         )
