@@ -1,14 +1,14 @@
 {
     "devDependencies": {
         "@babel/preset-react": "^7.0.0",
-        "@symfony/webpack-encore": "^0.21.0",
+        "@symfony/webpack-encore": "^4.2.0",
         "babel-preset-react": "^6.24.1",
         "browser-sync": "^2.26.3",
         "gulp": "^4.0.0",
         "jquery": "^3.3.1",
         "node-sass": "^4.9.4",
         "popper": "^1.0.1",
-        "sass-loader": "^7.1.0"
+        "sass-loader": "^13.2.0"
     },
     "license": "UNLICENSED",
     "private": true,
@@ -21,7 +21,7 @@
     "dependencies": {
         "amqplib": "^0.5.2",
         "axios": "^0.18.0",
-        "css-loader": "^1.0.1",
+        "css-loader": "^6.7.3",
         "dotenv": "^6.1.0",
         "fs": "^0.0.1-security",
         "js-yaml": "^3.13.1",
